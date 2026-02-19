@@ -25,6 +25,10 @@ mixin _$BudgetGoal {
   double get weeklyBudget => throw _privateConstructorUsedError;
   DateTime get startDate => throw _privateConstructorUsedError;
   bool get isActive => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
+  String? get remoteId => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  SyncStatus get syncStatus => throw _privateConstructorUsedError;
 
   /// Serializes this BudgetGoal to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,7 +47,16 @@ abstract class $BudgetGoalCopyWith<$Res> {
     $Res Function(BudgetGoal) then,
   ) = _$BudgetGoalCopyWithImpl<$Res, BudgetGoal>;
   @useResult
-  $Res call({int? id, double weeklyBudget, DateTime startDate, bool isActive});
+  $Res call({
+    int? id,
+    double weeklyBudget,
+    DateTime startDate,
+    bool isActive,
+    String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    SyncStatus syncStatus,
+  });
 }
 
 /// @nodoc
@@ -65,6 +78,10 @@ class _$BudgetGoalCopyWithImpl<$Res, $Val extends BudgetGoal>
     Object? weeklyBudget = null,
     Object? startDate = null,
     Object? isActive = null,
+    Object? userId = null,
+    Object? remoteId = freezed,
+    Object? updatedAt = freezed,
+    Object? syncStatus = null,
   }) {
     return _then(
       _value.copyWith(
@@ -84,6 +101,22 @@ class _$BudgetGoalCopyWithImpl<$Res, $Val extends BudgetGoal>
                 ? _value.isActive
                 : isActive // ignore: cast_nullable_to_non_nullable
                       as bool,
+            userId: null == userId
+                ? _value.userId
+                : userId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            remoteId: freezed == remoteId
+                ? _value.remoteId
+                : remoteId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            syncStatus: null == syncStatus
+                ? _value.syncStatus
+                : syncStatus // ignore: cast_nullable_to_non_nullable
+                      as SyncStatus,
           )
           as $Val,
     );
@@ -99,7 +132,16 @@ abstract class _$$BudgetGoalImplCopyWith<$Res>
   ) = __$$BudgetGoalImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int? id, double weeklyBudget, DateTime startDate, bool isActive});
+  $Res call({
+    int? id,
+    double weeklyBudget,
+    DateTime startDate,
+    bool isActive,
+    String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    SyncStatus syncStatus,
+  });
 }
 
 /// @nodoc
@@ -120,6 +162,10 @@ class __$$BudgetGoalImplCopyWithImpl<$Res>
     Object? weeklyBudget = null,
     Object? startDate = null,
     Object? isActive = null,
+    Object? userId = null,
+    Object? remoteId = freezed,
+    Object? updatedAt = freezed,
+    Object? syncStatus = null,
   }) {
     return _then(
       _$BudgetGoalImpl(
@@ -139,6 +185,22 @@ class __$$BudgetGoalImplCopyWithImpl<$Res>
             ? _value.isActive
             : isActive // ignore: cast_nullable_to_non_nullable
                   as bool,
+        userId: null == userId
+            ? _value.userId
+            : userId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        remoteId: freezed == remoteId
+            ? _value.remoteId
+            : remoteId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        syncStatus: null == syncStatus
+            ? _value.syncStatus
+            : syncStatus // ignore: cast_nullable_to_non_nullable
+                  as SyncStatus,
       ),
     );
   }
@@ -152,6 +214,10 @@ class _$BudgetGoalImpl implements _BudgetGoal {
     required this.weeklyBudget,
     required this.startDate,
     this.isActive = true,
+    this.userId = '',
+    this.remoteId,
+    this.updatedAt,
+    this.syncStatus = SyncStatus.pending,
   });
 
   factory _$BudgetGoalImpl.fromJson(Map<String, dynamic> json) =>
@@ -166,10 +232,20 @@ class _$BudgetGoalImpl implements _BudgetGoal {
   @override
   @JsonKey()
   final bool isActive;
+  @override
+  @JsonKey()
+  final String userId;
+  @override
+  final String? remoteId;
+  @override
+  final DateTime? updatedAt;
+  @override
+  @JsonKey()
+  final SyncStatus syncStatus;
 
   @override
   String toString() {
-    return 'BudgetGoal(id: $id, weeklyBudget: $weeklyBudget, startDate: $startDate, isActive: $isActive)';
+    return 'BudgetGoal(id: $id, weeklyBudget: $weeklyBudget, startDate: $startDate, isActive: $isActive, userId: $userId, remoteId: $remoteId, updatedAt: $updatedAt, syncStatus: $syncStatus)';
   }
 
   @override
@@ -183,13 +259,29 @@ class _$BudgetGoalImpl implements _BudgetGoal {
             (identical(other.startDate, startDate) ||
                 other.startDate == startDate) &&
             (identical(other.isActive, isActive) ||
-                other.isActive == isActive));
+                other.isActive == isActive) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.remoteId, remoteId) ||
+                other.remoteId == remoteId) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.syncStatus, syncStatus) ||
+                other.syncStatus == syncStatus));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, weeklyBudget, startDate, isActive);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    weeklyBudget,
+    startDate,
+    isActive,
+    userId,
+    remoteId,
+    updatedAt,
+    syncStatus,
+  );
 
   /// Create a copy of BudgetGoal
   /// with the given fields replaced by the non-null parameter values.
@@ -211,6 +303,10 @@ abstract class _BudgetGoal implements BudgetGoal {
     required final double weeklyBudget,
     required final DateTime startDate,
     final bool isActive,
+    final String userId,
+    final String? remoteId,
+    final DateTime? updatedAt,
+    final SyncStatus syncStatus,
   }) = _$BudgetGoalImpl;
 
   factory _BudgetGoal.fromJson(Map<String, dynamic> json) =
@@ -224,6 +320,14 @@ abstract class _BudgetGoal implements BudgetGoal {
   DateTime get startDate;
   @override
   bool get isActive;
+  @override
+  String get userId;
+  @override
+  String? get remoteId;
+  @override
+  DateTime? get updatedAt;
+  @override
+  SyncStatus get syncStatus;
 
   /// Create a copy of BudgetGoal
   /// with the given fields replaced by the non-null parameter values.

@@ -1,9 +1,4 @@
-enum DashboardFilter {
-  daily,
-  monthly,
-  sixMonths,
-  yearly,
-}
+enum DashboardFilter { daily, monthly, sixMonths, yearly }
 
 extension DashboardFilterX on DashboardFilter {
   String get label {

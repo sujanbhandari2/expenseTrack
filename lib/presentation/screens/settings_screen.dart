@@ -1,4 +1,5 @@
 import 'package:daily_finance_tracker/presentation/providers/app_providers.dart';
+import 'package:daily_finance_tracker/presentation/providers/auth_provider.dart';
 import 'package:daily_finance_tracker/presentation/providers/goal_provider.dart';
 import 'package:daily_finance_tracker/presentation/providers/settings_provider.dart';
 import 'package:daily_finance_tracker/presentation/providers/transaction_provider.dart';
@@ -25,6 +26,8 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final settingsAsync = ref.watch(settingsProvider);
     final goalAsync = ref.watch(goalProvider);
+    final user = ref.watch(authStateProvider).valueOrNull;
+    final userId = ref.watch(currentUserIdProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Settings')),
@@ -45,6 +48,46 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
           children: [
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _SectionTitle(
+                      icon: Icons.account_circle_outlined,
+                      title: 'Account',
+                    ),
+                    const SizedBox(height: 10),
+                    Text(user?.displayName ?? 'Signed in user'),
+                    Text(
+                      user?.email ?? '-',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final message = await ref
+                              .read(authControllerProvider.notifier)
+                              .signOut();
+                          if (!context.mounted || message == null) return;
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(message)));
+                        },
+                        icon: const Icon(Icons.logout_rounded),
+                        label: const Text('Sign Out'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
             settingsAsync.when(
               data: (settings) {
                 final timeParts = settings.reminderTime.split(':');
@@ -117,11 +160,15 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             DropdownMenuItem(value: 'USD', child: Text('USD')),
                             DropdownMenuItem(value: 'INR', child: Text('INR')),
                           ],
-                          onChanged: (v) {
+                          onChanged: (v) async {
                             if (v != null) {
-                              ref
+                              final message = await ref
                                   .read(settingsProvider.notifier)
                                   .updateCurrency(v);
+                              if (!context.mounted || message == null) return;
+                              ScaffoldMessenger.of(
+                                context,
+                              ).showSnackBar(SnackBar(content: Text(message)));
                             }
                           },
                         ),
@@ -164,10 +211,16 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             _budgetController.text.trim(),
                           );
                           if (value == null || value <= 0) return;
-                          await ref
+                          final message = await ref
                               .read(goalProvider.notifier)
                               .saveWeeklyBudget(value);
                           if (!context.mounted) return;
+                          if (message != null) {
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(SnackBar(content: Text(message)));
+                            return;
+                          }
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text('Weekly budget saved.'),
@@ -207,9 +260,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       width: double.infinity,
                       child: FilledButton.tonal(
                         onPressed: () async {
+                          if (userId == null) return;
                           await ref
                               .read(dummyDataServiceProvider)
-                              .insertDummyData(days: 45);
+                              .insertDummyData(userId: userId, days: 45);
                           await ref
                               .read(transactionProvider.notifier)
                               .loadInitial();

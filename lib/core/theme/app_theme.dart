@@ -4,13 +4,13 @@ class AppTheme {
   static ThemeData lightTheme() {
     const scheme = ColorScheme(
       brightness: Brightness.light,
-      primary: Color(0xFF4B63F0),
+      primary: Color(0xFF6D4CFF),
       onPrimary: Colors.white,
-      primaryContainer: Color(0xFFDCE2FF),
-      onPrimaryContainer: Color(0xFF1D2C84),
-      secondary: Color(0xFFFFB655),
+      primaryContainer: Color(0xFFE5DEFF),
+      onPrimaryContainer: Color(0xFF281A68),
+      secondary: Color(0xFF89A8FF),
       onSecondary: Color(0xFF3D2400),
-      secondaryContainer: Color(0xFFFFE2BC),
+      secondaryContainer: Color(0xFFDCE5FF),
       onSecondaryContainer: Color(0xFF5B3A00),
       tertiary: Color(0xFF4CA8FF),
       onTertiary: Colors.white,
@@ -20,7 +20,7 @@ class AppTheme {
       onError: Colors.white,
       errorContainer: Color(0xFFFFDAD6),
       onErrorContainer: Color(0xFF410002),
-      surface: Color(0xFFF3F5FB),
+      surface: Color(0xFFF6F5FD),
       onSurface: Color(0xFF1A2138),
       onSurfaceVariant: Color(0xFF5A6175),
       outline: Color(0xFFBCC2D5),
@@ -29,8 +29,8 @@ class AppTheme {
       scrim: Colors.black,
       inverseSurface: Color(0xFF2B3147),
       onInverseSurface: Color(0xFFEFF1F8),
-      inversePrimary: Color(0xFFBBC3FF),
-      surfaceTint: Color(0xFF4B63F0),
+      inversePrimary: Color(0xFFD1C7FF),
+      surfaceTint: Color(0xFF6D4CFF),
     );
 
     return _themeFromScheme(scheme);
@@ -83,7 +83,7 @@ class AppTheme {
             : Colors.white,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: BorderRadius.circular(20),
           side: BorderSide(
             color: colorScheme.outlineVariant.withValues(alpha: .7),
           ),
@@ -121,15 +121,15 @@ class AppTheme {
         filled: true,
         fillColor: colorScheme.surfaceContainerHighest.withValues(alpha: .45),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: colorScheme.outlineVariant),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: colorScheme.outlineVariant),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: colorScheme.primary, width: 1.4),
         ),
       ),

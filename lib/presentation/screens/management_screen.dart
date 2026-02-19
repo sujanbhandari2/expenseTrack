@@ -7,6 +7,7 @@ import 'package:daily_finance_tracker/presentation/widgets/transaction_form_shee
 import 'package:daily_finance_tracker/presentation/widgets/transaction_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ManagementScreen extends ConsumerStatefulWidget {
   const ManagementScreen({super.key});
@@ -39,6 +40,7 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
   Widget build(BuildContext context) {
     final txState = ref.watch(transactionProvider);
     final settings = ref.watch(settingsProvider).valueOrNull;
+    final scheme = Theme.of(context).colorScheme;
     final currency = settings?.currency ?? 'NPR';
 
     final income = txState.items
@@ -47,12 +49,13 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
     final expense = txState.items
         .where((e) => e.type == TransactionType.expense)
         .fold<double>(0, (s, e) => s + e.amount);
+    final balance = income - expense;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Transactions')),
+      appBar: AppBar(centerTitle: true, title: const Text('Activity')),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addTransaction,
-        icon: const Icon(Icons.add),
+        icon: const Icon(Icons.add_rounded),
         label: const Text('Add'),
       ),
       body: Container(
@@ -61,11 +64,9 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(
-                context,
-              ).colorScheme.primaryContainer.withValues(alpha: .16),
-              Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surface,
+              scheme.primaryContainer.withValues(alpha: .16),
+              scheme.surface,
+              scheme.surface,
             ],
           ),
         ),
@@ -80,37 +81,152 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
                   controller: _scrollController,
                   padding: const EdgeInsets.fromLTRB(12, 6, 12, 90),
                   children: [
-                    Card(
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(24),
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFEDE9FF), Color(0xFFCFC7FF)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(14),
-                        child: Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Expanded(
-                              child: _SummaryItem(
-                                label: 'Income',
-                                value: formatCurrency(income, currency),
-                                color: const Color(0xFF1B9C5A),
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  'Current Balance',
+                                  style: TextStyle(
+                                    color: scheme.onSurfaceVariant,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 7,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: const Text(
+                                    'Month',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: _SummaryItem(
-                                label: 'Expense',
-                                value: formatCurrency(expense, currency),
-                                color: const Color(0xFFE45858),
-                              ),
+                            const SizedBox(height: 2),
+                            Text(
+                              formatCurrency(balance, currency),
+                              style: Theme.of(context).textTheme.headlineMedium
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: -0.45,
+                                  ),
                             ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: _SummaryItem(
-                                label: 'Count',
-                                value: '${txState.items.length}',
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: _SummaryItem(
+                                    label: 'Income',
+                                    value: formatCurrency(income, currency),
+                                    color: const Color(0xFF1B9C5A),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _SummaryItem(
+                                    label: 'Expense',
+                                    value: formatCurrency(expense, currency),
+                                    color: const Color(0xFFE45858),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: _SummaryItem(
+                                    label: 'Count',
+                                    value: '${txState.items.length}',
+                                    color: scheme.primary,
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Text(
+                          'Quick Menu',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const Spacer(),
+                        Text(
+                          'See all',
+                          style: TextStyle(
+                            color: scheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 116,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          _QuickActionCard(
+                            icon: Icons.add_card_rounded,
+                            title: 'Add expense',
+                            onTap: _addTransaction,
+                          ),
+                          const SizedBox(width: 8),
+                          _QuickActionCard(
+                            icon: Icons.tune_rounded,
+                            title: 'Set budget',
+                            onTap: () => context.go('/settings'),
+                          ),
+                          const SizedBox(width: 8),
+                          _QuickActionCard(
+                            icon: Icons.refresh_rounded,
+                            title: 'Refresh',
+                            onTap: () => ref
+                                .read(transactionProvider.notifier)
+                                .loadInitial(),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Text(
+                          'Payment History',
+                          style: Theme.of(context).textTheme.titleLarge
+                              ?.copyWith(fontWeight: FontWeight.w800),
+                        ),
+                        const Spacer(),
+                        Text(
+                          'See all',
+                          style: TextStyle(
+                            color: scheme.onSurfaceVariant,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
                     ..._buildGrouped(txState.items, currency),
                     if (txState.isLoading)
@@ -142,7 +258,7 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
     for (final key in keys) {
       widgets.add(
         Padding(
-          padding: const EdgeInsets.only(top: 14, bottom: 4),
+          padding: const EdgeInsets.only(top: 12, bottom: 4),
           child: Text(
             formatDate(key),
             style: Theme.of(
@@ -179,7 +295,13 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
     );
 
     if (result != null) {
-      await ref.read(transactionProvider.notifier).addTransaction(result);
+      final message = await ref
+          .read(transactionProvider.notifier)
+          .addTransaction(result);
+      if (!mounted || message == null) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -195,7 +317,13 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
     );
 
     if (result != null) {
-      await ref.read(transactionProvider.notifier).updateTransaction(result);
+      final message = await ref
+          .read(transactionProvider.notifier)
+          .updateTransaction(result);
+      if (!mounted || message == null) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -219,8 +347,65 @@ class _ManagementScreenState extends ConsumerState<ManagementScreen> {
     );
 
     if (confirm == true && item.id != null) {
-      await ref.read(transactionProvider.notifier).deleteTransaction(item.id!);
+      final message = await ref
+          .read(transactionProvider.notifier)
+          .deleteTransaction(item.id!);
+      if (!mounted || message == null) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  const _QuickActionCard({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Ink(
+        width: 140,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          gradient: LinearGradient(
+            colors: [
+              scheme.primaryContainer.withValues(alpha: .45),
+              Colors.white,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          border: Border.all(
+            color: scheme.outlineVariant.withValues(alpha: .8),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              radius: 17,
+              backgroundColor: Colors.white,
+              child: Icon(icon, color: scheme.primary),
+            ),
+            const Spacer(),
+            Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+          ],
+        ),
+      ),
+    );
   }
 }
 
@@ -238,16 +423,16 @@ class _SummaryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(9),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: .11),
+        color: color.withValues(alpha: .13),
         borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(label, style: Theme.of(context).textTheme.bodySmall),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             value,
             maxLines: 1,

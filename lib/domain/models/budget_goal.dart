@@ -1,3 +1,4 @@
+import 'package:daily_finance_tracker/domain/models/sync_status.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'budget_goal.freezed.dart';
@@ -10,6 +11,10 @@ class BudgetGoal with _$BudgetGoal {
     required double weeklyBudget,
     required DateTime startDate,
     @Default(true) bool isActive,
+    @Default('') String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    @Default(SyncStatus.pending) SyncStatus syncStatus,
   }) = _BudgetGoal;
 
   factory BudgetGoal.fromJson(Map<String, dynamic> json) =>

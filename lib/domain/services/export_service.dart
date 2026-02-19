@@ -46,14 +46,19 @@ class ExportService {
             style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
           ),
           pw.SizedBox(height: 8),
-          pw.Text('Period: ${dateFormat.format(start)} to ${dateFormat.format(end)}'),
+          pw.Text(
+            'Period: ${dateFormat.format(start)} to ${dateFormat.format(end)}',
+          ),
           pw.SizedBox(height: 12),
           pw.Text('Total Income: ${stats.totalIncome.toStringAsFixed(2)}'),
           pw.Text('Total Expense: ${stats.totalExpense.toStringAsFixed(2)}'),
           pw.Text('Balance: ${stats.balance.toStringAsFixed(2)}'),
           pw.Text('Savings Rate: ${stats.savingsRate.toStringAsFixed(2)}%'),
           pw.SizedBox(height: 12),
-          pw.Text('Category Breakdown', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          pw.Text(
+            'Category Breakdown',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
           pw.Table(
             border: pw.TableBorder.all(color: PdfColors.grey300),
             children: [
@@ -87,12 +92,18 @@ class ExportService {
           ),
           if (chartImage != null) ...[
             pw.SizedBox(height: 12),
-            pw.Text('Chart Snapshot', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            pw.Text(
+              'Chart Snapshot',
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
             pw.SizedBox(height: 8),
             pw.Image(pw.MemoryImage(chartImage), height: 180),
           ],
           pw.SizedBox(height: 12),
-          pw.Text('Transactions', style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+          pw.Text(
+            'Transactions',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+          ),
           pw.SizedBox(height: 6),
           pw.Table(
             border: pw.TableBorder.all(color: PdfColors.grey300),
@@ -109,20 +120,21 @@ class ExportService {
               ),
               ...transactions.map(
                 (t) => pw.TableRow(
-                  children: [
-                    DateFormat('yyyy-MM-dd').format(t.createdAt),
-                    t.title,
-                    t.type.name,
-                    t.category,
-                    t.amount.toStringAsFixed(2),
-                  ]
-                      .map(
-                        (v) => pw.Padding(
-                          padding: const pw.EdgeInsets.all(4),
-                          child: pw.Text(v),
-                        ),
-                      )
-                      .toList(),
+                  children:
+                      [
+                            DateFormat('yyyy-MM-dd').format(t.createdAt),
+                            t.title,
+                            t.type.name,
+                            t.category,
+                            t.amount.toStringAsFixed(2),
+                          ]
+                          .map(
+                            (v) => pw.Padding(
+                              padding: const pw.EdgeInsets.all(4),
+                              child: pw.Text(v),
+                            ),
+                          )
+                          .toList(),
                 ),
               ),
             ],
@@ -138,7 +150,10 @@ class ExportService {
     );
     final file = File(filePath);
     await file.writeAsBytes(await doc.save());
-    await Printing.sharePdf(bytes: await doc.save(), filename: p.basename(filePath));
+    await Printing.sharePdf(
+      bytes: await doc.save(),
+      filename: p.basename(filePath),
+    );
     return filePath;
   }
 

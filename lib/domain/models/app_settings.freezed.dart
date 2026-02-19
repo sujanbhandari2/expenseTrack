@@ -21,10 +21,14 @@ AppSettings _$AppSettingsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$AppSettings {
-  int get id => throw _privateConstructorUsedError;
+  int? get id => throw _privateConstructorUsedError;
   bool get dailyReminderEnabled => throw _privateConstructorUsedError;
   String get reminderTime => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
+  String? get remoteId => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  SyncStatus get syncStatus => throw _privateConstructorUsedError;
 
   /// Serializes this AppSettings to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -44,10 +48,14 @@ abstract class $AppSettingsCopyWith<$Res> {
   ) = _$AppSettingsCopyWithImpl<$Res, AppSettings>;
   @useResult
   $Res call({
-    int id,
+    int? id,
     bool dailyReminderEnabled,
     String reminderTime,
     String currency,
+    String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    SyncStatus syncStatus,
   });
 }
 
@@ -66,17 +74,21 @@ class _$AppSettingsCopyWithImpl<$Res, $Val extends AppSettings>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? dailyReminderEnabled = null,
     Object? reminderTime = null,
     Object? currency = null,
+    Object? userId = null,
+    Object? remoteId = freezed,
+    Object? updatedAt = freezed,
+    Object? syncStatus = null,
   }) {
     return _then(
       _value.copyWith(
-            id: null == id
+            id: freezed == id
                 ? _value.id
                 : id // ignore: cast_nullable_to_non_nullable
-                      as int,
+                      as int?,
             dailyReminderEnabled: null == dailyReminderEnabled
                 ? _value.dailyReminderEnabled
                 : dailyReminderEnabled // ignore: cast_nullable_to_non_nullable
@@ -89,6 +101,22 @@ class _$AppSettingsCopyWithImpl<$Res, $Val extends AppSettings>
                 ? _value.currency
                 : currency // ignore: cast_nullable_to_non_nullable
                       as String,
+            userId: null == userId
+                ? _value.userId
+                : userId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            remoteId: freezed == remoteId
+                ? _value.remoteId
+                : remoteId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            syncStatus: null == syncStatus
+                ? _value.syncStatus
+                : syncStatus // ignore: cast_nullable_to_non_nullable
+                      as SyncStatus,
           )
           as $Val,
     );
@@ -105,10 +133,14 @@ abstract class _$$AppSettingsImplCopyWith<$Res>
   @override
   @useResult
   $Res call({
-    int id,
+    int? id,
     bool dailyReminderEnabled,
     String reminderTime,
     String currency,
+    String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    SyncStatus syncStatus,
   });
 }
 
@@ -126,17 +158,21 @@ class __$$AppSettingsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? dailyReminderEnabled = null,
     Object? reminderTime = null,
     Object? currency = null,
+    Object? userId = null,
+    Object? remoteId = freezed,
+    Object? updatedAt = freezed,
+    Object? syncStatus = null,
   }) {
     return _then(
       _$AppSettingsImpl(
-        id: null == id
+        id: freezed == id
             ? _value.id
             : id // ignore: cast_nullable_to_non_nullable
-                  as int,
+                  as int?,
         dailyReminderEnabled: null == dailyReminderEnabled
             ? _value.dailyReminderEnabled
             : dailyReminderEnabled // ignore: cast_nullable_to_non_nullable
@@ -149,6 +185,22 @@ class __$$AppSettingsImplCopyWithImpl<$Res>
             ? _value.currency
             : currency // ignore: cast_nullable_to_non_nullable
                   as String,
+        userId: null == userId
+            ? _value.userId
+            : userId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        remoteId: freezed == remoteId
+            ? _value.remoteId
+            : remoteId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        syncStatus: null == syncStatus
+            ? _value.syncStatus
+            : syncStatus // ignore: cast_nullable_to_non_nullable
+                  as SyncStatus,
       ),
     );
   }
@@ -158,18 +210,21 @@ class __$$AppSettingsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$AppSettingsImpl implements _AppSettings {
   const _$AppSettingsImpl({
-    this.id = 1,
+    this.id,
     this.dailyReminderEnabled = false,
     this.reminderTime = '21:00',
     this.currency = 'NPR',
+    this.userId = '',
+    this.remoteId,
+    this.updatedAt,
+    this.syncStatus = SyncStatus.pending,
   });
 
   factory _$AppSettingsImpl.fromJson(Map<String, dynamic> json) =>
       _$$AppSettingsImplFromJson(json);
 
   @override
-  @JsonKey()
-  final int id;
+  final int? id;
   @override
   @JsonKey()
   final bool dailyReminderEnabled;
@@ -179,10 +234,20 @@ class _$AppSettingsImpl implements _AppSettings {
   @override
   @JsonKey()
   final String currency;
+  @override
+  @JsonKey()
+  final String userId;
+  @override
+  final String? remoteId;
+  @override
+  final DateTime? updatedAt;
+  @override
+  @JsonKey()
+  final SyncStatus syncStatus;
 
   @override
   String toString() {
-    return 'AppSettings(id: $id, dailyReminderEnabled: $dailyReminderEnabled, reminderTime: $reminderTime, currency: $currency)';
+    return 'AppSettings(id: $id, dailyReminderEnabled: $dailyReminderEnabled, reminderTime: $reminderTime, currency: $currency, userId: $userId, remoteId: $remoteId, updatedAt: $updatedAt, syncStatus: $syncStatus)';
   }
 
   @override
@@ -196,7 +261,14 @@ class _$AppSettingsImpl implements _AppSettings {
             (identical(other.reminderTime, reminderTime) ||
                 other.reminderTime == reminderTime) &&
             (identical(other.currency, currency) ||
-                other.currency == currency));
+                other.currency == currency) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.remoteId, remoteId) ||
+                other.remoteId == remoteId) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.syncStatus, syncStatus) ||
+                other.syncStatus == syncStatus));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -207,6 +279,10 @@ class _$AppSettingsImpl implements _AppSettings {
     dailyReminderEnabled,
     reminderTime,
     currency,
+    userId,
+    remoteId,
+    updatedAt,
+    syncStatus,
   );
 
   /// Create a copy of AppSettings
@@ -225,23 +301,35 @@ class _$AppSettingsImpl implements _AppSettings {
 
 abstract class _AppSettings implements AppSettings {
   const factory _AppSettings({
-    final int id,
+    final int? id,
     final bool dailyReminderEnabled,
     final String reminderTime,
     final String currency,
+    final String userId,
+    final String? remoteId,
+    final DateTime? updatedAt,
+    final SyncStatus syncStatus,
   }) = _$AppSettingsImpl;
 
   factory _AppSettings.fromJson(Map<String, dynamic> json) =
       _$AppSettingsImpl.fromJson;
 
   @override
-  int get id;
+  int? get id;
   @override
   bool get dailyReminderEnabled;
   @override
   String get reminderTime;
   @override
   String get currency;
+  @override
+  String get userId;
+  @override
+  String? get remoteId;
+  @override
+  DateTime? get updatedAt;
+  @override
+  SyncStatus get syncStatus;
 
   /// Create a copy of AppSettings
   /// with the given fields replaced by the non-null parameter values.

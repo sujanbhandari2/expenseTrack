@@ -9,7 +9,7 @@ class DummyDataService {
 
   final TransactionRepository _repository;
 
-  Future<void> insertDummyData({int days = 30}) async {
+  Future<void> insertDummyData({required String userId, int days = 30}) async {
     final random = Random();
     final now = DateTime.now();
     final items = <TransactionItem>[];
@@ -23,9 +23,12 @@ class DummyDataService {
             title: 'Expense ${i + e + 1}',
             amount: random.nextDouble() * 2000 + 100,
             type: TransactionType.expense,
-            category: expenseCategories[random.nextInt(expenseCategories.length)],
+            category:
+                expenseCategories[random.nextInt(expenseCategories.length)],
             note: random.nextBool() ? 'Auto generated' : null,
             createdAt: date.subtract(Duration(hours: random.nextInt(12))),
+            userId: userId,
+            updatedAt: DateTime.now(),
           ),
         );
       }
@@ -39,6 +42,8 @@ class DummyDataService {
             category: incomeCategories[random.nextInt(incomeCategories.length)],
             note: 'Auto generated',
             createdAt: date.subtract(Duration(hours: random.nextInt(8))),
+            userId: userId,
+            updatedAt: DateTime.now(),
           ),
         );
       }

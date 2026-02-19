@@ -45,7 +45,9 @@ class _TransactionFormSheetState extends State<TransactionFormSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = _type == TransactionType.expense ? expenseCategories : incomeCategories;
+    final categories = _type == TransactionType.expense
+        ? expenseCategories
+        : incomeCategories;
     if (!categories.contains(_selectedCategory)) {
       _selectedCategory = categories.first;
     }
@@ -64,29 +66,42 @@ class _TransactionFormSheetState extends State<TransactionFormSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.initial == null ? 'Add Transaction' : 'Edit Transaction'),
+              Text(
+                widget.initial == null ? 'Add Transaction' : 'Edit Transaction',
+              ),
               const SizedBox(height: 12),
               TextFormField(
                 controller: _titleController,
                 decoration: const InputDecoration(labelText: 'Title'),
-                validator: (v) => (v == null || v.trim().isEmpty) ? 'Required' : null,
+                validator: (v) =>
+                    (v == null || v.trim().isEmpty) ? 'Required' : null,
               ),
               const SizedBox(height: 10),
               TextFormField(
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: const InputDecoration(labelText: 'Amount'),
                 validator: (v) {
                   final parsed = double.tryParse(v ?? '');
-                  if (parsed == null || parsed <= 0) return 'Enter valid amount';
+                  if (parsed == null || parsed <= 0) {
+                    return 'Enter valid amount';
+                  }
                   return null;
                 },
               ),
               const SizedBox(height: 10),
               SegmentedButton<TransactionType>(
                 segments: const [
-                  ButtonSegment(value: TransactionType.expense, label: Text('Expense')),
-                  ButtonSegment(value: TransactionType.income, label: Text('Income')),
+                  ButtonSegment(
+                    value: TransactionType.expense,
+                    label: Text('Expense'),
+                  ),
+                  ButtonSegment(
+                    value: TransactionType.income,
+                    label: Text('Income'),
+                  ),
                 ],
                 selected: {_type},
                 onSelectionChanged: (selected) {
@@ -163,7 +178,9 @@ class _TransactionFormSheetState extends State<TransactionFormSheet> {
       amount: double.parse(_amountController.text.trim()),
       type: _type,
       category: _selectedCategory,
-      note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
+      note: _noteController.text.trim().isEmpty
+          ? null
+          : _noteController.text.trim(),
       createdAt: _selectedDate,
     );
 

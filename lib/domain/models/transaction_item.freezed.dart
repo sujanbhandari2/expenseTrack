@@ -28,6 +28,11 @@ mixin _$TransactionItem {
   String get category => throw _privateConstructorUsedError;
   String? get note => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
+  String get userId => throw _privateConstructorUsedError;
+  String? get remoteId => throw _privateConstructorUsedError;
+  DateTime? get updatedAt => throw _privateConstructorUsedError;
+  bool get isDeleted => throw _privateConstructorUsedError;
+  SyncStatus get syncStatus => throw _privateConstructorUsedError;
 
   /// Serializes this TransactionItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -54,6 +59,11 @@ abstract class $TransactionItemCopyWith<$Res> {
     String category,
     String? note,
     DateTime createdAt,
+    String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    bool isDeleted,
+    SyncStatus syncStatus,
   });
 }
 
@@ -79,6 +89,11 @@ class _$TransactionItemCopyWithImpl<$Res, $Val extends TransactionItem>
     Object? category = null,
     Object? note = freezed,
     Object? createdAt = null,
+    Object? userId = null,
+    Object? remoteId = freezed,
+    Object? updatedAt = freezed,
+    Object? isDeleted = null,
+    Object? syncStatus = null,
   }) {
     return _then(
       _value.copyWith(
@@ -110,6 +125,26 @@ class _$TransactionItemCopyWithImpl<$Res, $Val extends TransactionItem>
                 ? _value.createdAt
                 : createdAt // ignore: cast_nullable_to_non_nullable
                       as DateTime,
+            userId: null == userId
+                ? _value.userId
+                : userId // ignore: cast_nullable_to_non_nullable
+                      as String,
+            remoteId: freezed == remoteId
+                ? _value.remoteId
+                : remoteId // ignore: cast_nullable_to_non_nullable
+                      as String?,
+            updatedAt: freezed == updatedAt
+                ? _value.updatedAt
+                : updatedAt // ignore: cast_nullable_to_non_nullable
+                      as DateTime?,
+            isDeleted: null == isDeleted
+                ? _value.isDeleted
+                : isDeleted // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            syncStatus: null == syncStatus
+                ? _value.syncStatus
+                : syncStatus // ignore: cast_nullable_to_non_nullable
+                      as SyncStatus,
           )
           as $Val,
     );
@@ -133,6 +168,11 @@ abstract class _$$TransactionItemImplCopyWith<$Res>
     String category,
     String? note,
     DateTime createdAt,
+    String userId,
+    String? remoteId,
+    DateTime? updatedAt,
+    bool isDeleted,
+    SyncStatus syncStatus,
   });
 }
 
@@ -157,6 +197,11 @@ class __$$TransactionItemImplCopyWithImpl<$Res>
     Object? category = null,
     Object? note = freezed,
     Object? createdAt = null,
+    Object? userId = null,
+    Object? remoteId = freezed,
+    Object? updatedAt = freezed,
+    Object? isDeleted = null,
+    Object? syncStatus = null,
   }) {
     return _then(
       _$TransactionItemImpl(
@@ -188,6 +233,26 @@ class __$$TransactionItemImplCopyWithImpl<$Res>
             ? _value.createdAt
             : createdAt // ignore: cast_nullable_to_non_nullable
                   as DateTime,
+        userId: null == userId
+            ? _value.userId
+            : userId // ignore: cast_nullable_to_non_nullable
+                  as String,
+        remoteId: freezed == remoteId
+            ? _value.remoteId
+            : remoteId // ignore: cast_nullable_to_non_nullable
+                  as String?,
+        updatedAt: freezed == updatedAt
+            ? _value.updatedAt
+            : updatedAt // ignore: cast_nullable_to_non_nullable
+                  as DateTime?,
+        isDeleted: null == isDeleted
+            ? _value.isDeleted
+            : isDeleted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        syncStatus: null == syncStatus
+            ? _value.syncStatus
+            : syncStatus // ignore: cast_nullable_to_non_nullable
+                  as SyncStatus,
       ),
     );
   }
@@ -204,6 +269,11 @@ class _$TransactionItemImpl implements _TransactionItem {
     required this.category,
     this.note,
     required this.createdAt,
+    this.userId = '',
+    this.remoteId,
+    this.updatedAt,
+    this.isDeleted = false,
+    this.syncStatus = SyncStatus.pending,
   });
 
   factory _$TransactionItemImpl.fromJson(Map<String, dynamic> json) =>
@@ -223,10 +293,23 @@ class _$TransactionItemImpl implements _TransactionItem {
   final String? note;
   @override
   final DateTime createdAt;
+  @override
+  @JsonKey()
+  final String userId;
+  @override
+  final String? remoteId;
+  @override
+  final DateTime? updatedAt;
+  @override
+  @JsonKey()
+  final bool isDeleted;
+  @override
+  @JsonKey()
+  final SyncStatus syncStatus;
 
   @override
   String toString() {
-    return 'TransactionItem(id: $id, title: $title, amount: $amount, type: $type, category: $category, note: $note, createdAt: $createdAt)';
+    return 'TransactionItem(id: $id, title: $title, amount: $amount, type: $type, category: $category, note: $note, createdAt: $createdAt, userId: $userId, remoteId: $remoteId, updatedAt: $updatedAt, isDeleted: $isDeleted, syncStatus: $syncStatus)';
   }
 
   @override
@@ -242,7 +325,16 @@ class _$TransactionItemImpl implements _TransactionItem {
                 other.category == category) &&
             (identical(other.note, note) || other.note == note) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.remoteId, remoteId) ||
+                other.remoteId == remoteId) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt) &&
+            (identical(other.isDeleted, isDeleted) ||
+                other.isDeleted == isDeleted) &&
+            (identical(other.syncStatus, syncStatus) ||
+                other.syncStatus == syncStatus));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -256,6 +348,11 @@ class _$TransactionItemImpl implements _TransactionItem {
     category,
     note,
     createdAt,
+    userId,
+    remoteId,
+    updatedAt,
+    isDeleted,
+    syncStatus,
   );
 
   /// Create a copy of TransactionItem
@@ -284,6 +381,11 @@ abstract class _TransactionItem implements TransactionItem {
     required final String category,
     final String? note,
     required final DateTime createdAt,
+    final String userId,
+    final String? remoteId,
+    final DateTime? updatedAt,
+    final bool isDeleted,
+    final SyncStatus syncStatus,
   }) = _$TransactionItemImpl;
 
   factory _TransactionItem.fromJson(Map<String, dynamic> json) =
@@ -303,6 +405,16 @@ abstract class _TransactionItem implements TransactionItem {
   String? get note;
   @override
   DateTime get createdAt;
+  @override
+  String get userId;
+  @override
+  String? get remoteId;
+  @override
+  DateTime? get updatedAt;
+  @override
+  bool get isDeleted;
+  @override
+  SyncStatus get syncStatus;
 
   /// Create a copy of TransactionItem
   /// with the given fields replaced by the non-null parameter values.
