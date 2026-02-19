@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "331922913075",
+    "project_id": "expense-app-1d0ca",
+    "storage_bucket": "expense-app-1d0ca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331922913075:android:2bf38b07f6998a4073f046",
+        "android_client_info": {
+          "package_name": "com.dailyfinance.daily_finance_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331922913075-tg86fv7jbqo3lip06fcfjg75mng1ksk6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMo6aXi2Ge3cvgS9QUKU6-hoGqnbkxH60"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331922913075-tg86fv7jbqo3lip06fcfjg75mng1ksk6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
