@@ -1,5 +1,7 @@
 import 'package:daily_finance_tracker/domain/services/auth_service.dart';
+import 'package:daily_finance_tracker/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -8,7 +10,10 @@ final firebaseAuthProvider = Provider<FirebaseAuth>((ref) {
 });
 
 final googleSignInProvider = Provider<GoogleSignIn>((ref) {
-  return GoogleSignIn(scopes: const ['email']);
+  return GoogleSignIn(
+    scopes: const ['email'],
+    serverClientId: DefaultFirebaseOptions.googleWebClientId,
+  );
 });
 
 final authServiceProvider = Provider<AuthService>((ref) {
@@ -40,9 +45,13 @@ class AuthController extends StateNotifier<AsyncValue<void>> {
     } on AuthCancelledException {
       state = const AsyncData(null);
       return 'Google sign-in cancelled.';
-    } catch (_) {
+    } catch (error, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('Google sign-in failed: $error');
+        debugPrintStack(stackTrace: stackTrace);
+      }
       state = const AsyncData(null);
-      return 'Google sign-in failed. Check Firebase config and try again.';
+      return _googleSignInErrorMessage(error);
     }
   }
 
@@ -63,3 +72,16 @@ final authControllerProvider =
     StateNotifierProvider<AuthController, AsyncValue<void>>((ref) {
       return AuthController(ref.watch(authServiceProvider));
     });
+
+String _googleSignInErrorMessage(Object error) {
+  final message = error.toString();
+  if (message.contains('ApiException: 10') ||
+      message.contains('DEVELOPER_ERROR')) {
+    return 'Google sign-in is misconfigured. Add your debug SHA-1 fingerprint '
+        'in Firebase Console, re-download google-services.json, then rebuild.';
+  }
+  if (message.contains('network_error') || message.contains('NetworkError')) {
+    return 'Network error during Google sign-in. Check your connection and try again.';
+  }
+  return 'Google sign-in failed. Check Firebase config and try again.';
+}

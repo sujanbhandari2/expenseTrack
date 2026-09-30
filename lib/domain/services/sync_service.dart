@@ -27,57 +27,84 @@ class SyncService {
   final RemoteTransactionRepository _remoteTransactionRepository;
   final RemoteGoalRepository _remoteGoalRepository;
   final RemoteSettingsRepository _remoteSettingsRepository;
+  final Map<String, Future<void>> _activeFullSyncs = {};
+  final Map<String, Future<void>> _activeTransactionSyncs = {};
 
-  Future<void> syncAll(String userId) async {
-    debugPrint(
-      'SyncService: trying to sync all data in Firestore for userId=$userId',
-    );
-    await syncTransactions(userId);
-    await syncGoal(userId);
-    await syncSettings(userId);
+  Future<void> syncAll(String userId) {
+    return _runSingleFlight(_activeFullSyncs, userId, () async {
+      debugPrint(
+        'SyncService: trying to sync all data in Firestore for userId=$userId',
+      );
+      await syncTransactions(userId);
+      await syncGoal(userId);
+      await syncSettings(userId);
+    });
   }
 
-  Future<void> syncTransactions(String userId) async {
-    debugPrint(
-      'SyncService: trying to sync transactions in Firestore for userId=$userId',
-    );
-    final pending = await _transactionRepository.fetchPendingTransactions(
-      userId,
-    );
-    debugPrint(
-      'SyncService: pending transactions to push=${pending.length} for userId=$userId',
-    );
-    for (final tx in pending) {
+  Future<void> syncTransactions(String userId) {
+    return _runSingleFlight(_activeTransactionSyncs, userId, () async {
       debugPrint(
-        'SyncService: pushing transaction to Firestore '
-        '(localId=${tx.id}, remoteId=${tx.remoteId ?? "new"})',
+        'SyncService: trying to sync transactions in Firestore for userId=$userId',
       );
-      final remoteId = await _remoteTransactionRepository.upsertTransaction(
+      final pending = await _transactionRepository.fetchPendingTransactions(
         userId,
-        tx,
       );
-      if (tx.id != null) {
-        await _transactionRepository.markTransactionSynced(
-          localId: tx.id!,
-          remoteId: remoteId,
-          userId: userId,
+      debugPrint(
+        'SyncService: pending transactions to push=${pending.length} for userId=$userId',
+      );
+      for (final tx in pending) {
+        debugPrint(
+          'SyncService: pushing transaction to Firestore '
+          '(localId=${tx.id}, remoteId=${tx.remoteId ?? "new"})',
+        );
+        final remoteId = await _remoteTransactionRepository.upsertTransaction(
+          userId,
+          tx,
+        );
+        if (tx.id != null) {
+          await _transactionRepository.markTransactionSynced(
+            localId: tx.id!,
+            remoteId: remoteId,
+            userId: userId,
+          );
+        }
+      }
+
+      debugPrint(
+        'SyncService: fetching transactions from Firestore for userId=$userId',
+      );
+      final remoteTransactions = await _remoteTransactionRepository
+          .fetchTransactions(userId);
+      debugPrint(
+        'SyncService: pulled ${remoteTransactions.length} transactions from Firestore',
+      );
+      for (final tx in remoteTransactions) {
+        await _transactionRepository.upsertFromRemote(
+          tx.copyWith(userId: userId),
         );
       }
+    });
+  }
+
+  Future<void> _runSingleFlight(
+    Map<String, Future<void>> activeSyncs,
+    String userId,
+    Future<void> Function() operation,
+  ) {
+    final activeSync = activeSyncs[userId];
+    if (activeSync != null) {
+      debugPrint('SyncService: sync already in progress for userId=$userId');
+      return activeSync;
     }
 
-    debugPrint(
-      'SyncService: fetching transactions from Firestore for userId=$userId',
-    );
-    final remoteTransactions = await _remoteTransactionRepository
-        .fetchTransactions(userId);
-    debugPrint(
-      'SyncService: pulled ${remoteTransactions.length} transactions from Firestore',
-    );
-    for (final tx in remoteTransactions) {
-      await _transactionRepository.upsertFromRemote(
-        tx.copyWith(userId: userId),
-      );
-    }
+    late final Future<void> sync;
+    sync = operation().whenComplete(() {
+      if (identical(activeSyncs[userId], sync)) {
+        activeSyncs.remove(userId);
+      }
+    });
+    activeSyncs[userId] = sync;
+    return sync;
   }
 
   Future<void> syncGoal(String userId) async {

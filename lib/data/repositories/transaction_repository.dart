@@ -140,61 +140,62 @@ class TransactionRepository {
     if (item.userId.isEmpty) return;
 
     final db = await _database.database;
-
-    Map<String, dynamic>? existing;
-    if (item.remoteId != null && item.remoteId!.isNotEmpty) {
-      final byRemote = await db.query(
-        'transactions',
-        where: 'userId = ? AND remoteId = ?',
-        whereArgs: [item.userId, item.remoteId],
-        limit: 1,
-      );
-      if (byRemote.isNotEmpty) {
-        existing = byRemote.first;
+    await db.transaction((txn) async {
+      Map<String, dynamic>? existing;
+      if (item.remoteId != null && item.remoteId!.isNotEmpty) {
+        final byRemote = await txn.query(
+          'transactions',
+          where: 'userId = ? AND remoteId = ?',
+          whereArgs: [item.userId, item.remoteId],
+          limit: 1,
+        );
+        if (byRemote.isNotEmpty) {
+          existing = byRemote.first;
+        }
       }
-    }
 
-    if (existing == null && item.id != null) {
-      final byId = await db.query(
-        'transactions',
-        where: 'id = ? AND userId = ?',
-        whereArgs: [item.id, item.userId],
-        limit: 1,
-      );
-      if (byId.isNotEmpty) {
-        existing = byId.first;
+      if (existing == null && item.id != null) {
+        final byId = await txn.query(
+          'transactions',
+          where: 'id = ? AND userId = ?',
+          whereArgs: [item.id, item.userId],
+          limit: 1,
+        );
+        if (byId.isNotEmpty) {
+          existing = byId.first;
+        }
       }
-    }
 
-    final remoteUpdatedAt = item.updatedAt;
-    if (existing != null) {
-      final localSync = existing['syncStatus'] as String?;
-      final localUpdatedAtRaw = existing['updatedAt'] as String?;
-      final localUpdatedAt =
-          localUpdatedAtRaw == null || localUpdatedAtRaw.isEmpty
-          ? null
-          : DateTime.tryParse(localUpdatedAtRaw);
+      final remoteUpdatedAt = item.updatedAt;
+      if (existing != null) {
+        final localSync = existing['syncStatus'] as String?;
+        final localUpdatedAtRaw = existing['updatedAt'] as String?;
+        final localUpdatedAt =
+            localUpdatedAtRaw == null || localUpdatedAtRaw.isEmpty
+            ? null
+            : DateTime.tryParse(localUpdatedAtRaw);
 
-      if (localSync == SyncStatus.pending.name &&
-          localUpdatedAt != null &&
-          remoteUpdatedAt != null &&
-          localUpdatedAt.isAfter(remoteUpdatedAt)) {
+        if (localSync == SyncStatus.pending.name &&
+            localUpdatedAt != null &&
+            remoteUpdatedAt != null &&
+            localUpdatedAt.isAfter(remoteUpdatedAt)) {
+          return;
+        }
+
+        await txn.update(
+          'transactions',
+          _toMap(item.copyWith(syncStatus: SyncStatus.synced)),
+          where: 'id = ?',
+          whereArgs: [existing['id']],
+        );
         return;
       }
 
-      await db.update(
+      await txn.insert(
         'transactions',
         _toMap(item.copyWith(syncStatus: SyncStatus.synced)),
-        where: 'id = ?',
-        whereArgs: [existing['id']],
       );
-      return;
-    }
-
-    await db.insert(
-      'transactions',
-      _toMap(item.copyWith(syncStatus: SyncStatus.synced)),
-    );
+    });
   }
 
   Map<String, dynamic> _toMap(TransactionItem item) {

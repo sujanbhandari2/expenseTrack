@@ -57,6 +57,11 @@ class DefaultFirebaseOptions {
     storageBucket: 'expense-app-1d0ca.firebasestorage.app',
   );
 
+  /// Web OAuth client ID from Firebase (client_type 3 in google-services.json).
+  /// Required as [GoogleSignIn.serverClientId] on Android for Firebase Auth.
+  static const String googleWebClientId =
+      '331922913075-tg86fv7jbqo3lip06fcfjg75mng1ksk6.apps.googleusercontent.com';
+
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyD7gFuy2vuv1ow0I_HBSmDCPjPD4KtE3VA',
     appId: '1:331922913075:ios:c50e1854c35f157873f046',
